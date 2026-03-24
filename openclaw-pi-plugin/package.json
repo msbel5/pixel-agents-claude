@@ -1,14 +1,27 @@
 {
-  "name": "@msbel5/openclaw-pixel-dashboard",
+  "name": "pixel-agents",
   "version": "0.1.0",
-  "description": "Native OpenClaw pixel dashboard plugin for Raspberry Pi and tablet mirroring.",
+  "description": "Pixel Agents style dashboard plugin for OpenClaw on Raspberry Pi.",
   "type": "module",
+  "files": [
+    "index.js",
+    "lib/",
+    "openclaw.plugin.json",
+    "ui/",
+    "README.md"
+  ],
+  "scripts": {
+    "pack": "npm pack"
+  },
+  "engines": {
+    "node": ">=22.16.0"
+  },
   "peerDependencies": {
-    "openclaw": ">=2026.3.22"
+    "openclaw": ">=2026.3.23-2"
   },
   "peerDependenciesMeta": {
     "openclaw": {
-      "optional": true
+      "optional": false
     }
   },
   "openclaw": {

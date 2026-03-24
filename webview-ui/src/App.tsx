@@ -7,6 +7,11 @@ import { PULSE_ANIMATION_DURATION_SEC } from './constants.js';
 import { useEditorActions } from './hooks/useEditorActions.js';
 import { useEditorKeyboard } from './hooks/useEditorKeyboard.js';
 import { useExtensionMessages } from './hooks/useExtensionMessages.js';
+import {
+  isOpenClawBrowserRuntime,
+  isOpenClawReadOnlyRuntime,
+  startOpenClawBrowserStream,
+} from './openclawBrowser.js';
 import { OfficeCanvas } from './office/components/OfficeCanvas.js';
 import { ToolOverlay } from './office/components/ToolOverlay.js';
 import { EditorState } from './office/editor/editorState.js';
@@ -129,6 +134,25 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!isBrowserRuntime || !isOpenClawBrowserRuntime()) return;
+    let cleanup = () => {};
+    let disposed = false;
+    void startOpenClawBrowserStream().then((dispose) => {
+      if (disposed) {
+        dispose();
+        return;
+      }
+      cleanup = dispose;
+    });
+    return () => {
+      disposed = true;
+      cleanup();
+    };
+  }, []);
+
+  const isReadOnlyBrowser = isBrowserRuntime && isOpenClawReadOnlyRuntime();
+
   const editor = useEditorActions(getOfficeState, editorState);
 
   const isEditDirty = useCallback(
@@ -164,8 +188,9 @@ function App() {
   );
 
   const handleSelectAgent = useCallback((id: number) => {
+    if (isReadOnlyBrowser) return;
     vscode.postMessage({ type: 'focusAgent', id });
-  }, []);
+  }, [isReadOnlyBrowser]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -183,16 +208,18 @@ function App() {
   );
 
   const handleCloseAgent = useCallback((id: number) => {
+    if (isReadOnlyBrowser) return;
     vscode.postMessage({ type: 'closeAgent', id });
-  }, []);
+  }, [isReadOnlyBrowser]);
 
   const handleClick = useCallback((agentId: number) => {
+    if (isReadOnlyBrowser) return;
     // If clicked agent is a sub-agent, focus the parent's terminal instead
     const os = getOfficeState();
     const meta = os.subagentMeta.get(agentId);
     const focusId = meta ? meta.parentAgentId : agentId;
     vscode.postMessage({ type: 'focusAgent', id: focusId });
-  }, []);
+  }, [isReadOnlyBrowser]);
 
   const officeState = getOfficeState();
 
@@ -279,23 +306,25 @@ function App() {
         }}
       />
 
-      <BottomToolbar
-        isEditMode={editor.isEditMode}
-        onOpenClaude={editor.handleOpenClaude}
-        onToggleEditMode={editor.handleToggleEditMode}
-        isDebugMode={isDebugMode}
-        onToggleDebugMode={handleToggleDebugMode}
-        alwaysShowOverlay={alwaysShowOverlay}
-        onToggleAlwaysShowOverlay={handleToggleAlwaysShowOverlay}
-        workspaceFolders={workspaceFolders}
-        externalAssetDirectories={externalAssetDirectories}
-      />
+      {!isReadOnlyBrowser && (
+        <BottomToolbar
+          isEditMode={editor.isEditMode}
+          onOpenClaude={editor.handleOpenClaude}
+          onToggleEditMode={editor.handleToggleEditMode}
+          isDebugMode={isDebugMode}
+          onToggleDebugMode={handleToggleDebugMode}
+          alwaysShowOverlay={alwaysShowOverlay}
+          onToggleAlwaysShowOverlay={handleToggleAlwaysShowOverlay}
+          workspaceFolders={workspaceFolders}
+          externalAssetDirectories={externalAssetDirectories}
+        />
+      )}
 
-      {editor.isEditMode && editor.isDirty && (
+      {!isReadOnlyBrowser && editor.isEditMode && editor.isDirty && (
         <EditActionBar editor={editor} editorState={editorState} />
       )}
 
-      {showRotateHint && (
+      {!isReadOnlyBrowser && showRotateHint && (
         <div
           style={{
             position: 'absolute',
@@ -318,7 +347,8 @@ function App() {
         </div>
       )}
 
-      {editor.isEditMode &&
+      {!isReadOnlyBrowser &&
+        editor.isEditMode &&
         (() => {
           // Compute selected furniture color from current layout
           const selUid = editorState.selectedFurnitureUid;
@@ -358,6 +388,7 @@ function App() {
           panRef={editor.panRef}
           onCloseAgent={handleCloseAgent}
           alwaysShowOverlay={alwaysShowOverlay}
+          showCloseButtons={!isReadOnlyBrowser}
         />
       )}
 

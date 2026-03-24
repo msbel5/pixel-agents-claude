@@ -1,0 +1,13 @@
+{
+  "id": "pixel-agents",
+  "name": "Pixel Agents Dashboard",
+  "description": "Read-only Pixel Agents style dashboard for OpenClaw, with Raspberry Pi kiosk and tablet PWA support.",
+  "version": "0.1.0",
+  "enabledByDefault": true,
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "uiHints": {}
+}

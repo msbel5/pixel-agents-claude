@@ -1,0 +1,17 @@
+{
+  "name": "Pixel Agents Dashboard",
+  "short_name": "Pixel Agents",
+  "description": "Read-only Pixel Agents style live dashboard for OpenClaw.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1e1e2e",
+  "theme_color": "#1e1e2e",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ]
+}

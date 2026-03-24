@@ -107,7 +107,23 @@ export function useExtensionMessages(
       const msg = e.data;
       const os = getOfficeState();
 
-      if (msg.type === 'layoutLoaded') {
+      if (msg.type === 'stateReset') {
+        for (const seat of os.seats.values()) {
+          seat.assigned = false;
+        }
+        os.characters.clear();
+        os.subagentIdMap.clear();
+        os.subagentMeta.clear();
+        os.selectedAgentId = null;
+        os.cameraFollowId = null;
+        os.hoveredAgentId = null;
+        setAgents([]);
+        setSelectedAgent(null);
+        setAgentTools({});
+        setAgentStatuses({});
+        setSubagentTools({});
+        setSubagentCharacters([]);
+      } else if (msg.type === 'layoutLoaded') {
         // Skip external layout updates while editor has unsaved changes
         if (layoutReadyRef.current && isEditDirty?.()) {
           console.log('[Webview] Skipping external layout update — editor has unsaved changes');
@@ -138,9 +154,11 @@ export function useExtensionMessages(
       } else if (msg.type === 'agentCreated') {
         const id = msg.id as number;
         const folderName = msg.folderName as string | undefined;
+        const palette = msg.palette as number | undefined;
+        const hueShift = msg.hueShift as number | undefined;
         setAgents((prev) => (prev.includes(id) ? prev : [...prev, id]));
         setSelectedAgent(id);
-        os.addAgent(id, undefined, undefined, undefined, undefined, folderName);
+        os.addAgent(id, palette, hueShift, undefined, undefined, folderName);
         saveAgentSeats(os);
       } else if (msg.type === 'agentClosed') {
         const id = msg.id as number;
@@ -175,16 +193,27 @@ export function useExtensionMessages(
           { palette?: number; hueShift?: number; seatId?: string }
         >;
         const folderNames = (msg.folderNames || {}) as Record<number, string>;
-        // Buffer agents — they'll be added in layoutLoaded after seats are built
         for (const id of incoming) {
           const m = meta[id];
-          pendingAgents.push({
+          const agent = {
             id,
             palette: m?.palette,
             hueShift: m?.hueShift,
             seatId: m?.seatId,
             folderName: folderNames[id],
-          });
+          };
+          if (layoutReadyRef.current) {
+            os.addAgent(
+              agent.id,
+              agent.palette,
+              agent.hueShift,
+              agent.seatId,
+              true,
+              agent.folderName,
+            );
+          } else {
+            pendingAgents.push(agent);
+          }
         }
         setAgents((prev) => {
           const ids = new Set(prev);
@@ -196,6 +225,9 @@ export function useExtensionMessages(
           }
           return merged.sort((a, b) => a - b);
         });
+        if (layoutReadyRef.current && incoming.length > 0) {
+          saveAgentSeats(os);
+        }
       } else if (msg.type === 'agentToolStart') {
         const id = msg.id as number;
         const toolId = msg.toolId as string;

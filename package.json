@@ -51,6 +51,7 @@
   "scripts": {
     "vscode:prepublish": "npm run package",
     "build:webview": "cd webview-ui && npm run build",
+    "build:openclaw-plugin": "npm run build:webview && node scripts/build-openclaw-plugin.mjs",
     "compile": "npm run check-types && npm run lint && node esbuild.js && npm run build:webview",
     "build": "npm run compile",
     "watch": "npm-run-all -p watch:*",
@@ -64,6 +65,8 @@
     "lint:webview": "cd webview-ui && npm run lint",
     "lint:webview:fix": "cd webview-ui && eslint . --fix",
     "import-tileset": "tsx scripts/import-tileset-cli.ts",
+    "pack:openclaw-plugin": "npm run build:openclaw-plugin && npm pack ./openclaw-pi-plugin",
+    "test:openclaw-plugin": "node --test openclaw-pi-plugin/test/*.test.js",
     "format": "prettier --write \"src/**/*.ts\" \"webview-ui/src/**/*.{ts,tsx,css}\" \"*.{js,mjs}\" \"webview-ui/*.{js,ts}\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"webview-ui/src/**/*.{ts,tsx,css}\" \"*.{js,mjs}\" \"webview-ui/*.{js,ts}\""
   },

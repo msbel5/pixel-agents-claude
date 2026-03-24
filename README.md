@@ -30,6 +30,8 @@ Right now it works as a VS Code extension with Claude Code. The vision though, i
 
 This is the source code for the free Pixel Agents extension for VS Code — install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=pablodelucca.pixel-agents) or [Open VSX](https://open-vsx.org/extension/pablodelucca/pixel-agents) with the full furniture catalog included.
 
+This fork also includes an **OpenClaw-native Raspberry Pi dashboard plugin** under [`openclaw-pi-plugin/`](openclaw-pi-plugin/README.md). It serves the same office visualization as a read-only browser/PWA dashboard at `/pixel-agents/`, so you can mirror the live view to both the Pi display and a tablet.
+
 ![Pixel Agents screenshot](webview-ui/public/Screenshot.jpg)
 
 ## Features
@@ -52,6 +54,83 @@ This is the source code for the free Pixel Agents extension for VS Code — inst
 
 - VS Code 1.105.0 or later
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and configured
+
+### OpenClaw Plugin Requirements
+
+- OpenClaw `2026.3.23-2` or later
+- Node `22.16+` or Node `24`
+- Raspberry Pi with a desktop session if you want Chromium kiosk autostart
+- Tablet or browser client on the same LAN if you want mirrored live viewing
+
+## OpenClaw Raspberry Pi Plugin
+
+The OpenClaw plugin ships in `openclaw-pi-plugin/` and exposes:
+
+- `GET /pixel-agents/` — the live dashboard
+- `GET /pixel-agents/api/bootstrap` — browser runtime metadata
+- `GET /pixel-agents/api/snapshot` — the current dashboard state snapshot
+- `GET /pixel-agents/api/events` — server-sent live updates
+- `openclaw pixel-agents kiosk-install` — Chromium autostart on Pi login
+- `openclaw pixel-agents kiosk-open` — launch Chromium kiosk immediately
+
+### Build The Plugin
+
+```bash
+npm install
+cd webview-ui && npm install && cd ..
+npm run build:openclaw-plugin
+```
+
+That command builds the browser bundle and copies it into `openclaw-pi-plugin/ui/`, which is what the OpenClaw plugin serves.
+
+### Install Into OpenClaw
+
+```bash
+openclaw plugins install ./openclaw-pi-plugin
+openclaw gateway --port 18789
+```
+
+For Pi + tablet mirroring on the same LAN, bind the gateway to LAN instead of the
+default loopback-only mode:
+
+```bash
+openclaw gateway --port 18789 --bind lan --token CHANGE_ME
+```
+
+If you want a tarball instead of a local-path install:
+
+```bash
+npm run pack:openclaw-plugin
+openclaw plugins install ./pixel-agents-0.1.0.tgz
+```
+
+### Raspberry Pi Kiosk
+
+Install a login-time Chromium kiosk entry:
+
+```bash
+openclaw pixel-agents kiosk-install
+```
+
+For a one-off launch instead:
+
+```bash
+openclaw pixel-agents kiosk-open
+```
+
+### Tablet / PWA Access
+
+Open the dashboard from the tablet browser:
+
+```text
+http://<pi-ip>:18789/pixel-agents/
+```
+
+The tablet route is meant for a trusted LAN. OpenClaw still requires a token or
+password when you run the gateway with `--bind lan`, even though the dashboard
+route itself is plugin-managed.
+
+Then use the browser's "Add to Home Screen" action to install it as a PWA.
 
 ## Getting Started
 

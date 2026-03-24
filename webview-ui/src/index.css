@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/FSPixelSansUnicode-Regular.ttf') format('truetype');
+  src: url('./fonts/FSPixelSansUnicode-Regular.ttf') format('truetype');
 }
 
 :root {
@@ -60,6 +60,7 @@ body,
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: var(--pixel-bg);
   font-family: 'FS Pixel Sans', sans-serif;
 }
 
