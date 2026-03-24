@@ -1,0 +1,19 @@
+{
+  "name": "@msbel5/openclaw-pixel-dashboard",
+  "version": "0.1.0",
+  "description": "Native OpenClaw pixel dashboard plugin for Raspberry Pi and tablet mirroring.",
+  "type": "module",
+  "peerDependencies": {
+    "openclaw": ">=2026.3.22"
+  },
+  "peerDependenciesMeta": {
+    "openclaw": {
+      "optional": true
+    }
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.js"
+    ]
+  }
+}
