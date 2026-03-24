@@ -1,0 +1,22 @@
+{
+  "id": "pixel-agents",
+  "name": "Pixel Agents",
+  "description": "Pixel art office visualization for OpenClaw agents — watch your AI agents come to life as animated characters on your Pi screen or tablet",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "port": {
+        "type": "number",
+        "default": 18790,
+        "description": "HTTP port for the Pixel Agents web UI and WebSocket server"
+      },
+      "openBrowser": {
+        "type": "boolean",
+        "default": true,
+        "description": "Automatically open browser on Pi when gateway starts"
+      }
+    },
+    "additionalProperties": false
+  }
+}

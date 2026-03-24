@@ -1,0 +1,9 @@
+node_modules/
+ui/node_modules/
+ui/dist/
+dist/
+*.tsbuildinfo
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties

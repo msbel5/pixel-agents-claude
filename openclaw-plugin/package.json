@@ -1,0 +1,21 @@
+{
+  "name": "@msbel5/openclaw-pixel-agents",
+  "version": "1.0.0",
+  "description": "Pixel art office visualization plugin for OpenClaw — Raspberry Pi + tablet support",
+  "type": "module",
+  "openclaw": {
+    "extensions": ["./src/index.ts"]
+  },
+  "scripts": {
+    "build:ui": "cd ui && npm run build",
+    "build": "npm run build:ui"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.13",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.3"
+  }
+}

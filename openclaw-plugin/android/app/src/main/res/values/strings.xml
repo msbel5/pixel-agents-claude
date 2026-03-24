@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pixel Agents</string>
+    <string name="default_url">http://192.168.1.100:18790</string>
+</resources>

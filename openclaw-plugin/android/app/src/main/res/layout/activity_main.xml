@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1e1e2e">
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Connection settings overlay (shown when not connected) -->
+    <LinearLayout
+        android:id="@+id/settings_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:background="#CC1e1e2e"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pixel Agents"
+            android:textColor="#c4b5fd"
+            android:textSize="28sp"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter your Raspberry Pi address:"
+            android:textColor="#CCCCCC"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/url_input"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="http://192.168.1.100:18790"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="#2a2a3e"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:inputType="textUri"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/connect_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Connect"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#c4b5fd" />
+
+    </LinearLayout>
+
+</FrameLayout>
